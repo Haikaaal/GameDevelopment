@@ -1,10 +1,9 @@
 package Main;
 
 public class Game {
-    private GameWindow gameWindow;
-    private GamePanel gamePanel;
     public Game() {
-        gamePanel = new GamePanel();
-        gameWindow = new GameWindow(gamePanel);
+        GamePanel gamePanel = new GamePanel();
+        GameWindow gameWindow = new GameWindow(gamePanel);
+        gamePanel.requestFocus();
     }
 }

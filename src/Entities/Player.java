@@ -2,6 +2,7 @@ package Entities;
 
 import javax.imageio.ImageIO;
 
+import Main.Game;
 import Util.LoadSave;
 
 import java.awt.*;
@@ -9,140 +10,155 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static Util.Constant.PlayerConstants.*;
+import static Util.HelpMethods.CanMoveHere;
 import static Util.Constant.Directions.*;
 import static Util.Constant.Directions.DOWN;
 import static Util.Constant.PlayerConstants.*;
 
 public class Player extends Entity {
+	private BufferedImage[][] animations;
+	private int aniTick, aniIndex, aniSpeed = 15;
+	private int playerAction = IDLE;
+	private boolean moving = false, attacking = false;
+	private boolean left, up, right, down;
+	private float playerSpeed = 2.0f;
+	private int[][] lvlData;
+	private float xDrawOffset = 50 * Game.SCALE;
+	private float yDrawOffset = 65 * Game.SCALE;
 
-    private BufferedImage[][] animations;
-    private int aniTick, aniIndex, aniSpeed = 15;
-    private int playerAction = IDLE;
-    private boolean left,up,right,down;
-    private boolean moving, attacking = false;
-    private float playerSpeed = 2.0f;
+	public Player(float x, float y, int width, int height) {
+		super(x, y, width, height);
+		loadAnimations();
+		initHitbox(x, y, 30 * Game.SCALE, 65 * Game.SCALE);
+	}
 
-    public Player(float x, float y) {
-        super(x, y);
-        loadAnimations();
-    }
+	public void update() {
+		updatePos();
+		updateAnimationTick();
+		setAnimation();
+	}
 
-    public void update() {
-        updatePos();
-        updateAnimationTick();
-        setAnimation();
-    }
+	public void render(Graphics g) {
+		g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset), width, height, null);
+		drawHitbox(g);
+	}
 
-    public void render (Graphics g) {
-        g.drawImage(animations[playerAction][aniIndex], (int) x, (int) y, 256, 160, null);
-    }
+	private void updateAnimationTick() {
+		aniTick++;
+		if (aniTick >= aniSpeed) {
+			aniTick = 0;
+			aniIndex++;
+			if (aniIndex >= GetSpriteAmount(playerAction)) {
+				aniIndex = 0;
+				attacking = false;
+			}
 
+		}
 
-    private void updateAnimationTick() {
-        aniTick++;
-        if (aniTick >= aniSpeed) {
-            aniTick = 0;
-            aniIndex++;
-            if (aniIndex >= GetSpriteAmount(playerAction)) {
-                aniIndex = 0;
-                attacking = false;
-            }
+	}
 
-        }
+	private void setAnimation() {
+		int startAni = playerAction;
 
-    }
+		if (moving)
+			playerAction = RUNNING;
+		else
+			playerAction = IDLE;
 
-    private void setAnimation() {
+		if (attacking)
+			playerAction = ATTACK;
 
-        int startAni = playerAction;
-        if (moving)
-            playerAction = RUNNING;
-        else
-            playerAction = IDLE;
+		if (startAni != playerAction)
+			resetAniTick();
+	}
 
-        if (attacking)
-            playerAction = ATTACK;
-        if (startAni != playerAction)
-            resetAniTick();
-    }
+	private void resetAniTick() {
+		aniTick = 0;
+		aniIndex = 0;
+	}
 
-    private void resetAniTick() {
-        aniTick = 0;
-        aniIndex = 0;
-    }
+	private void updatePos() {
+		moving = false;
+		if (!left && !right && !up && !down)
+			return;
 
-    private void updatePos() {
+		float xSpeed = 0, ySpeed = 0;
 
-        moving = false;
-        if (left && !right) {
-            x-=playerSpeed;
-            moving = true;
-        }
-        else if (right && !left) {
-            x+= playerSpeed;
-            moving = true;
-        }
+		if (left && !right)
+			xSpeed = -playerSpeed;
+		else if (right && !left)
+			xSpeed = playerSpeed;
 
-        if (up && !down) {
-            y -= playerSpeed;
-            moving = true;
-        }
-        else if (down && !up) {
-            y+= playerSpeed;
-            moving = true;
-        }
-    }
+		if (up && !down)
+			ySpeed = -playerSpeed;
+		else if (down && !up)
+			ySpeed = playerSpeed;
+		
+		if (CanMoveHere(hitbox.x + xSpeed, hitbox.y + ySpeed, hitbox.width, hitbox.height, lvlData)) {
+			hitbox.x += xSpeed;
+			hitbox.y += ySpeed;
+			moving = true;
+		}
 
-    private void loadAnimations() {
+	}
 
-            BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
+	private void loadAnimations() {
 
-            animations = new BufferedImage[5][8];
-            for (int j = 0; j < animations.length; j++)
-                for (int i = 0; i < animations[j].length; i++)
-                    animations[j][i] = img.getSubimage((int) (i * 128.25), j * 130, (int) 128.25, 130);
-    }
-    public void resetDirBooleans() {
-        left = false;
-        right = false;
-        down = false;
-        up = false;
-    }
+		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
 
-    public void setAttacking(boolean attacking) {
-        this.attacking = attacking;
-    }
+		animations = new BufferedImage[5][8];
+		for (int j = 0; j < animations.length; j++)
+			for (int i = 0; i < animations[j].length; i++)
+				animations[j][i] = img.getSubimage((int) (i * 128.25), j * 130, (int) 128.25, 130);
 
-    public boolean isLeft() {
-        return left;
-    }
+	}
 
-    public void setLeft(boolean left) {
-        this.left = left;
-    }
+	public void loadLvlData(int[][] lvlData) {
+		this.lvlData = lvlData;
+	}
 
-    public boolean isUp() {
-        return up;
-    }
+	public void resetDirBooleans() {
+		left = false;
+		right = false;
+		up = false;
+		down = false;
+	}
 
-    public void setUp(boolean up) {
-        this.up = up;
-    }
+	public void setAttacking(boolean attacking) {
+		this.attacking = attacking;
+	}
 
-    public boolean isRight() {
-        return right;
-    }
+	public boolean isLeft() {
+		return left;
+	}
 
-    public void setRight(boolean right) {
-        this.right = right;
-    }
+	public void setLeft(boolean left) {
+		this.left = left;
+	}
 
-    public boolean isDown() {
-        return down;
-    }
+	public boolean isUp() {
+		return up;
+	}
 
-    public void setDown(boolean down) {
-        this.down = down;
-    }
+	public void setUp(boolean up) {
+		this.up = up;
+	}
+
+	public boolean isRight() {
+		return right;
+	}
+
+	public void setRight(boolean right) {
+		this.right = right;
+	}
+
+	public boolean isDown() {
+		return down;
+	}
+
+	public void setDown(boolean down) {
+		this.down = down;
+	}
 
 }

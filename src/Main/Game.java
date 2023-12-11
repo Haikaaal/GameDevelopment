@@ -4,6 +4,9 @@ import Entities.Player;
 import Main.GamePanel;
 import Main.GameWindow;
 import Levels.LevelManager;
+import GameStates.GameState;
+import GameStates.Menu;
+import GameStates.Playing;
 
 import java.awt.*;
 
@@ -16,6 +19,9 @@ public class Game implements Runnable {
     private final int UPS_SET = 200;
     private Player player;
 	private LevelManager LevelManager;
+	
+	private Playing playing;
+	private Menu menu;
     
     //Ukuran Game 
     public final static int TILES_DEFAULT_SIZE = 32; 
@@ -38,6 +44,8 @@ public class Game implements Runnable {
     	LevelManager = new LevelManager(this);
 		player = new Player(200, 200, (int) (128.25 * SCALE), (int) (130 * SCALE));
         player.loadLvlData(LevelManager.getCurrentLevel().getLevelData());
+        menu = new Menu(this);
+		playing = new Playing(this);
     }
 
     private void startGameLoop() {
@@ -45,15 +53,35 @@ public class Game implements Runnable {
         gameThread.start();
     }
 
-    public void update() {
-		LevelManager.update();
-        player.update();
-    }
+	public void update() {
+		switch (GameState.state) {
+		case MENU:
+			menu.update();
+			break;
+		case PLAYING:
+			playing.update();
+			break;
+		case OPTIONS:
+		case QUIT:
+		default:
+			System.exit(0);
+			break;
 
-    public void render(Graphics g) {
-		LevelManager.draw(g);
-        player.render(g);
-    }
+		}
+	}
+
+	public void render(Graphics g) {
+		switch (GameState.state) {
+		case MENU:
+			menu.draw(g);
+			break;
+		case PLAYING:
+			playing.draw(g);
+			break;
+		default:
+			break;
+		}
+	}
 
     @Override
     public void run() {
@@ -98,12 +126,19 @@ public class Game implements Runnable {
     }
 
     public void windowFocusLost() {
-        player.resetDirBooleans();
-    }
+		if (GameState.state == GameState.PLAYING)
+			playing.getPlayer().resetDirBooleans();
+	}
 
     public Player getPlayer () {
         return player;
     }
 
+    public Menu getMenu() {
+		return menu;
+	}
 
+	public Playing getPlaying() {
+		return playing;
+	}
 }

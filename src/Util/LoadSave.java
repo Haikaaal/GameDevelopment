@@ -12,8 +12,8 @@ import Main.Game;
 public class LoadSave {
 	
 	public static final String PLAYER_ATLAS = "test2.png";
-	public static final String LEVEL_ATLAS = "bg1.png";
-	public static final String LEVEL_ONE_DATA = "level_one_data.png";
+	public static final String LEVEL_ATLAS = "GreenlandsTileset.png";
+	public static final String LEVEL_ONE_DATA = "testing1.png";
 	public static final String MENU_BUTTONS = "button_atlas.png";
 	public static final String MENU_BACKGROUND = "menu_background.png";
 	
@@ -42,7 +42,7 @@ public class LoadSave {
 			for (int i = 0; i < img.getWidth(); i++) {
 				Color color = new Color(img.getRGB(i, j));
 				int value = color.getRed();
-				if (value >= 9)
+				if (value >= 100)
 					value = 0;
 				lvlData[j][i] = value;
 			}

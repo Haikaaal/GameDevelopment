@@ -31,10 +31,19 @@ public class MenuButton {
 	}
 
 	private void loadImgs() {
-		imgs = new BufferedImage[3];
+		imgs = new BufferedImage[4];
 		BufferedImage temp = LoadSave.GetSpriteAtlas(LoadSave.MENU_BUTTONS);
-		for (int i = 0; i < imgs.length; i++)
-			imgs[i] = temp.getSubimage(i * B_WIDTH_DEFAULT, rowIndex * B_HEIGHT_DEFAULT, B_WIDTH_DEFAULT, B_HEIGHT_DEFAULT);
+
+		int startY = rowIndex * B_HEIGHT_DEFAULT;
+
+		for (int i = 0; i < imgs.length; i++) {
+			int startX = i * B_WIDTH_DEFAULT;
+			imgs[i] = new BufferedImage(B_WIDTH_DEFAULT, B_HEIGHT_DEFAULT, BufferedImage.TYPE_INT_ARGB);
+			Graphics g = imgs[i].getGraphics();
+			g.drawImage(temp, 0, 0, B_WIDTH_DEFAULT, B_HEIGHT_DEFAULT, startX, startY, startX + B_WIDTH_DEFAULT, startY + B_HEIGHT_DEFAULT, null);
+			g.dispose();
+		}
+
 	}
 
 	public void draw(Graphics g) {
@@ -43,10 +52,6 @@ public class MenuButton {
 
 	public void update() {
 		index = 0;
-		if (mouseOver)
-			index = 1;
-		if (mousePressed)
-			index = 2;
 	}
 
 	public boolean isMouseOver() {

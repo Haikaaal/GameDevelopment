@@ -11,30 +11,21 @@ import Util.LoadSave;
 
 public class Menu extends State implements StateMethods {
 
-	private MenuButton[] buttons = new MenuButton[3];
+	private MenuButton[] buttons = new MenuButton[4];
 	private BufferedImage backgroundImg;
 	private int menuX, menuY, menuWidth, menuHeight;
 
 	public Menu(Game game) {
 		super(game);
 		loadButtons();
-		loadBackground();
-
-	}
-
-	private void loadBackground() {
-		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND);
-		menuWidth = (int) (backgroundImg.getWidth() * Game.SCALE);
-		menuHeight = (int) (backgroundImg.getHeight() * Game.SCALE);
-		menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
-		menuY = (int) (45 * Game.SCALE);
 
 	}
 
 	private void loadButtons() {
-		buttons[0] = new MenuButton(Game.GAME_WIDTH / 2, (int) (150 * Game.SCALE), 0, GameState.PLAYING);
-		buttons[1] = new MenuButton(Game.GAME_WIDTH / 2, (int) (220 * Game.SCALE), 1, GameState.OPTIONS);
-		buttons[2] = new MenuButton(Game.GAME_WIDTH / 2, (int) (290 * Game.SCALE), 2, GameState.QUIT);
+		buttons[0] = new MenuButton(Game.GAME_WIDTH / 2, (int) (50 * Game.SCALE), 0, GameState.PLAYING);
+		buttons[1] = new MenuButton(Game.GAME_WIDTH / 2, (int) (150 * Game.SCALE), 1, GameState.OPTIONS);
+		buttons[2] = new MenuButton(Game.GAME_WIDTH / 2, (int) (250 * Game.SCALE), 2, GameState.CREDITS);
+		buttons[3] = new MenuButton(Game.GAME_WIDTH / 2, (int) (350 * Game.SCALE), 3, GameState.QUIT);
 	}
 
 	@Override

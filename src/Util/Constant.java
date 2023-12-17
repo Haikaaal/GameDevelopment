@@ -58,6 +58,7 @@ public class Constant {
 
 		public static final int GOBLIN_WIDTH = (int) (GOBLIN_WIDTH_DEFAULT * Game.SCALE);
 		public static final int GOBLIN_HEIGHT = (int) (GOBLIN_HEIGHT_DEFAULT * Game.SCALE);
+		
 
 		public static int GetSpriteAmount(int enemy_type, int enemy_state) {
 

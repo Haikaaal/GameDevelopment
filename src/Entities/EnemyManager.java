@@ -25,9 +25,9 @@ public class EnemyManager {
 		System.out.println("size of crabs: " + goblins.size());
 	}
 
-	public void update() {
+	public void update(int[][] lvlData) {
 		for (Goblin c : goblins)
-			c.update();
+			c.update(lvlData);
 	}
 
 	public void draw(Graphics g, int xLvlOffset) {

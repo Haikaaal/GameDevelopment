@@ -5,12 +5,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import Entities.Player;
+import Entities.EnemyManager;
 import Levels.LevelManager;
 import Main.Game;
 import Util.LoadSave;
 
 public class Playing extends State implements StateMethods {
 	private Player player;
+	private EnemyManager enemyManager;
 	private LevelManager levelManager;
 	
 	private int xLvlOffset;
@@ -27,6 +29,7 @@ public class Playing extends State implements StateMethods {
 
 	private void initClasses() {
 		levelManager = new LevelManager(game);
+		enemyManager = new EnemyManager(this);
 		player = new Player(200, 200, (int) (126.25 * Game.SCALE), (int) (130 * Game.SCALE));
 		player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
 
@@ -36,6 +39,7 @@ public class Playing extends State implements StateMethods {
 	public void update() {
 		levelManager.update();
 		player.update();
+		enemyManager.update();
 		checkCloseToBorder();
 
 	}
@@ -60,7 +64,7 @@ public class Playing extends State implements StateMethods {
 	public void draw(Graphics g) {
 		levelManager.draw(g, xLvlOffset);
 		player.render(g, xLvlOffset);
-
+		enemyManager.draw(g, xLvlOffset);
 	}
 
 	@Override

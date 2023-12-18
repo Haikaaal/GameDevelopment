@@ -24,8 +24,8 @@ public class Player extends Entity {
 	private boolean left, up, right, down, jump;
 	private float playerSpeed = 2.0f;
 	private int[][] lvlData;
-	private float xDrawOffset = 50 * Game.SCALE;
-	private float yDrawOffset = 65 * Game.SCALE;
+	private float xDrawOffset = 21 * Game.SCALE;
+	private float yDrawOffset = 19 * Game.SCALE;
 	private float airSpeed = 0f;
 	private float gravity = 0.04f * Game.SCALE;
 	private float jumpSpeed = -2.25f * Game.SCALE;
@@ -35,7 +35,7 @@ public class Player extends Entity {
 	public Player(float x, float y, int width, int height) {
 		super(x, y, width, height);
 		loadAnimations();
-		initHitbox(x, y, 30 * Game.SCALE, 27 * Game.SCALE);
+		initHitbox(x, y, 20 * Game.SCALE, 30 * Game.SCALE);
 	}
 
 	public void update() {
@@ -108,21 +108,25 @@ public class Player extends Entity {
 				inAir = true;
 
 		if (inAir) {
-			if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
-				hitbox.y += airSpeed;
+			float newY = hitbox.y + airSpeed;
+			if (CanMoveHere(hitbox.x, newY, hitbox.width, hitbox.height, lvlData)) {
+				hitbox.y = newY;
 				airSpeed += gravity;
 				updateXpos(xSpeed);
 			} else {
-				hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
-				if (airSpeed > 0)
+				// Mengatasi masalah bouncing
+				if (airSpeed > 0) { // Jika jatuh
+					hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
 					resetInAir();
-				else
+				} else { // Jika melompat
+					hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
 					airSpeed = fallSpeedAfterCollision;
+				}
 				updateXpos(xSpeed);
 			}
-
-		} else
+		} else {
 			updateXpos(xSpeed);
+		}
 		moving = true;
 	}
 
@@ -153,7 +157,7 @@ public class Player extends Entity {
 		animations = new BufferedImage[5][8];
 		for (int j = 0; j < animations.length; j++)
 			for (int i = 0; i < animations[j].length; i++)
-				animations[j][i] = img.getSubimage((int) (i * 128.25), j * 130, (int) 128.25, 130);
+				animations[j][i] = img.getSubimage((int) (i * 39.5), j * 40, (int) 39.5, 40);
 
 	}
 

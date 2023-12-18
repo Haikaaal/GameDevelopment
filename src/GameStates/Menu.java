@@ -1,6 +1,6 @@
 package GameStates;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -12,19 +12,20 @@ import Util.LoadSave;
 public class Menu extends State implements StateMethods {
 
 	private MenuButton[] buttons = new MenuButton[4];
-	private BufferedImage backgroundImg;
+	private BufferedImage backgroundImg, bgimg, logoimg;
 	private int menuX, menuY, menuWidth, menuHeight;
 
 	public Menu(Game game) {
 		super(game);
 		loadButtons();
-
+		bgimg = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND_IMG);
+		logoimg = LoadSave.GetSpriteAtlas(LoadSave.LOGO);
 	}
 
 	private void loadButtons() {
-		buttons[0] = new MenuButton(Game.GAME_WIDTH / 2, (int) (50 * Game.SCALE), 0, GameState.PLAYING);
-		buttons[1] = new MenuButton(Game.GAME_WIDTH / 2, (int) (150 * Game.SCALE), 1, GameState.OPTIONS);
-		buttons[2] = new MenuButton(Game.GAME_WIDTH / 2, (int) (250 * Game.SCALE), 2, GameState.CREDITS);
+		buttons[0] = new MenuButton(Game.GAME_WIDTH / 2, (int) (200 * Game.SCALE), 0, GameState.PLAYING);
+		buttons[1] = new MenuButton(Game.GAME_WIDTH / 2, (int) (250 * Game.SCALE), 1, GameState.OPTIONS);
+		buttons[2] = new MenuButton(Game.GAME_WIDTH / 2, (int) (300 * Game.SCALE), 2, GameState.CREDITS);
 		buttons[3] = new MenuButton(Game.GAME_WIDTH / 2, (int) (350 * Game.SCALE), 3, GameState.QUIT);
 	}
 
@@ -36,8 +37,8 @@ public class Menu extends State implements StateMethods {
 
 	@Override
 	public void draw(Graphics g) {
-
-		g.drawImage(backgroundImg, menuX, menuY, menuWidth, menuHeight, null);
+		g.drawImage(bgimg, 0,0,Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+		g.drawImage(logoimg, (Game.GAME_WIDTH/3) + 15, 0, 400, 300, null);
 
 		for (MenuButton mb : buttons)
 			mb.draw(g);

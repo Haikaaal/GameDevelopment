@@ -16,11 +16,13 @@ import static Util.Constant.EnemyConstants.GOBLIN;
 
 public class LoadSave {
 	
-	public static final String PLAYER_ATLAS = "test2.png";
+	public static final String PLAYER_ATLAS = "cobacoba2.png";
 	public static final String LEVEL_ATLAS = "GreenlandsTileset.png";
 	public static final String LEVEL_ONE_DATA = "testing1.png";
 	public static final String MENU_BUTTONS = "GUI3.png";
 	public static final String GOBLIN_SPRITE = "crabby_sprite.png";
+	public static final String MENU_BACKGROUND_IMG = "47412.jpg";
+	public static final String LOGO = "rodin.png";
 	
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;

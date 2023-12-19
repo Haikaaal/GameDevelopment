@@ -23,6 +23,7 @@ public class LoadSave {
 	public static final String GOBLIN_SPRITE = "crabby_sprite.png";
 	public static final String MENU_BACKGROUND_IMG = "47412.jpg";
 	public static final String LOGO = "rodin.png";
+	public static final String GAME_BACKGROUND = "gamebg.png";
 	
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;

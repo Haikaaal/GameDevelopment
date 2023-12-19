@@ -3,6 +3,7 @@ package GameStates;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import Entities.Player;
 import Entities.EnemyManager;
@@ -14,6 +15,7 @@ public class Playing extends State implements StateMethods {
 	private Player player;
 	private EnemyManager enemyManager;
 	private LevelManager levelManager;
+	private BufferedImage bgimg;
 	
 	private int xLvlOffset;
 	private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
@@ -25,6 +27,8 @@ public class Playing extends State implements StateMethods {
 	public Playing(Game game) {
 		super(game);
 		initClasses();
+		bgimg = LoadSave.GetSpriteAtlas(LoadSave.GAME_BACKGROUND);
+
 	}
 
 	private void initClasses() {
@@ -37,10 +41,12 @@ public class Playing extends State implements StateMethods {
 
 	@Override
 	public void update() {
-		levelManager.update();
-		player.update();
-		enemyManager.update(levelManager.getCurrentLevel().getLevelData());
-		checkCloseToBorder();
+	    levelManager.update();
+	    player.update();
+	    enemyManager.update(levelManager.getCurrentLevel().getLevelData());
+	    checkCloseToBorder();
+	    checkWinCondition();
+	    checkLoseCondition();
 
 	}
 	
@@ -62,9 +68,11 @@ public class Playing extends State implements StateMethods {
 
 	@Override
 	public void draw(Graphics g) {
+		g.drawImage(bgimg, 0,0,Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
 		levelManager.draw(g, xLvlOffset);
 		player.render(g, xLvlOffset);
 		enemyManager.draw(g, xLvlOffset);
+		
 	}
 
 	@Override
@@ -119,6 +127,31 @@ public class Playing extends State implements StateMethods {
 		}
 
 	}
+
+	private void checkWinCondition() {
+	    int tilesWide = levelManager.getCurrentLevel().getLevelData()[0].length;
+	    int totalLevelWidth = tilesWide * Game.TILES_SIZE - 31;
+
+	    int playerRightX = (int) (player.getHitbox().x + player.getHitbox().width);
+	    if (playerRightX >= totalLevelWidth) {
+	        game.getGameWindow().showCongratulationPanel();
+	        player.getHitbox().x = 0;
+	        player.resetDirBooleans();
+	    }
+	}
+
+	private void checkLoseCondition() {
+	    int bottomPanelY = Game.GAME_HEIGHT;
+
+	    int playerBottomY = (int) (player.getHitbox().y + player.getHitbox().height);
+	    if (playerBottomY >= 626) {
+	        game.getGameWindow().showFailurePanel();
+	        player.getHitbox().x = 0;
+	        player.getHitbox().y = 0;
+	        player.resetDirBooleans();
+	    }
+	}
+
 
 	@Override
 	public void mousePressed(MouseEvent e) {

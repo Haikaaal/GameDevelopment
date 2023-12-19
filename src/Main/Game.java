@@ -129,7 +129,19 @@ public class Game implements Runnable {
 		if (GameState.state == GameState.PLAYING)
 			playing.getPlayer().resetDirBooleans();
 	}
-
+    
+    public GameWindow getGameWindow() {
+        return gameWindow;
+    }
+    
+    public void showGamePanel() {
+        gameWindow.showGamePanel();
+    }
+    
+    public void showCongratulationPanel() {
+        gameWindow.showCongratulationPanel();
+    }
+    
     public Menu getMenu() {
 		return menu;
 	}
